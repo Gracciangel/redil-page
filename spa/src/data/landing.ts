@@ -192,7 +192,11 @@ export async function loadLandingData(signal?: AbortSignal): Promise<LandingData
       const { data, error } = await supabase
         .from(table)
         .select('*')
-        .order('created_at', { ascending: false })
+        // `created_at` es nullable: en DESC los NULL van primero, así que se
+        // mandan al final y se desempata por id (identity) para tomar la fila
+        // realmente más reciente.
+        .order('created_at', { ascending: false, nullsFirst: false })
+        .order('id', { ascending: false })
         .limit(1)
       if (error) throw error
 
