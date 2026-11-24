@@ -1,0 +1,126 @@
+/* Mismos tokens que la app Redil: negro, violeta y Roboto. */
+:root {
+  color-scheme: dark;
+
+  --bg: #000000;
+  --bg-soft: rgba(255, 255, 255, 0.055);
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-2: rgba(255, 255, 255, 0.07);
+  --elevated: #221a25;
+  --ink: #f5eef8;
+  --muted: #b6a8bf;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.2);
+  --brand: #c084fc;
+  --brand-strong: #ead6ff;
+  --brand-soft: rgba(192, 132, 252, 0.16);
+  --on-brand: #1b0a1e;
+  --accent: #f0abfc;
+  --accent-soft: rgba(240, 171, 252, 0.14);
+  --accent-ink: #f8d5ff;
+  --success: #4ade80;
+  --success-soft: rgba(74, 222, 128, 0.13);
+  --blue: #9eb9ff;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 12px 34px rgba(0, 0, 0, 0.42);
+  --shadow-lg: 0 28px 70px rgba(0, 0, 0, 0.6);
+  --font: 'Roboto', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+
+  --scroll-y: 0;
+
+  font: 400 18px/1.5 var(--font);
+  letter-spacing: 0.05px;
+  color: var(--ink);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+h1,
+h2,
+h3,
+p,
+ol,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+a {
+  color: var(--brand);
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--brand) 55%, transparent);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--brand);
+  color: var(--on-brand);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(192, 132, 252, 0.35) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(192, 132, 252, 0.3);
+  border-radius: 10px;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    font-size: 16px;
+  }
+}
