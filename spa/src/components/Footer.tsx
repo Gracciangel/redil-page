@@ -14,6 +14,7 @@ export function Footer() {
         <a href="#congregaciones">Congregaciones</a>
         <a href="#funciones">Funciones</a>
         <a href="#progreso">Progreso</a>
+        <a href="#faq">Preguntas frecuentes</a>
         <a href="#instalar">Instalar</a>
       </div>
       <small>© {new Date().getFullYear()} Redil</small>

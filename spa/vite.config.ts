@@ -72,6 +72,12 @@ export default defineConfig({
             url: `${BASE}#progreso`,
             icons: [{ src: `${BASE}icons/icon-192.png`, sizes: '192x192' }],
           },
+          {
+            name: 'Preguntas frecuentes',
+            short_name: 'FAQ',
+            url: `${BASE}#faq`,
+            icons: [{ src: `${BASE}icons/icon-192.png`, sizes: '192x192' }],
+          },
         ],
       },
       workbox: {

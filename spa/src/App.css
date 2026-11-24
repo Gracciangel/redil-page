@@ -1588,6 +1588,132 @@
 }
 
 /* ------------------------------------------------------------------ */
+/* Preguntas frecuentes                                                */
+/* ------------------------------------------------------------------ */
+
+.section--faq {
+  border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(192, 132, 252, 0.035), transparent 55%);
+}
+
+.faq-layout {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  align-items: start;
+  gap: 76px;
+}
+
+.faq-intro {
+  position: sticky;
+  top: 120px;
+}
+
+.faq-intro h2 {
+  margin: 14px 0 18px;
+  font-size: clamp(2.1rem, 4.4vw, 3.2rem);
+  font-weight: 500;
+  line-height: 1.07;
+  letter-spacing: -0.045em;
+}
+
+.faq-hint {
+  margin-top: 22px;
+  color: var(--brand);
+  font-size: 0.85rem;
+}
+
+.faq-list {
+  display: grid;
+  gap: 12px;
+}
+
+.faq-item {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  transition:
+    border-color 0.25s,
+    background 0.25s,
+    transform 0.25s;
+}
+
+.faq-item:hover {
+  border-color: rgba(192, 132, 252, 0.3);
+  background: var(--surface-2);
+}
+
+.faq-item[open] {
+  border-color: rgba(192, 132, 252, 0.42);
+  background: rgba(192, 132, 252, 0.07);
+  transform: translateY(-2px);
+}
+
+.faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px 22px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 1.02rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: '+';
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  color: var(--brand);
+  font-size: 1.25rem;
+  line-height: 1;
+  transition:
+    transform 0.25s,
+    background 0.25s,
+    border-color 0.25s;
+}
+
+.faq-item[open] summary::after {
+  transform: rotate(45deg);
+  border-color: rgba(192, 132, 252, 0.5);
+  background: var(--brand-soft);
+}
+
+.faq-answer {
+  padding: 0 22px 20px;
+  color: var(--muted);
+  font-size: 0.96rem;
+  line-height: 1.7;
+}
+
+.faq-answer p {
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.faq-answer a {
+  color: var(--brand-strong);
+  text-decoration: underline;
+  text-decoration-color: rgba(192, 132, 252, 0.5);
+  text-underline-offset: 3px;
+}
+
+.faq-answer a:hover {
+  color: var(--accent-ink);
+}
+
+/* ------------------------------------------------------------------ */
 /* CTA de instalación y footer                                         */
 /* ------------------------------------------------------------------ */
 
@@ -1899,6 +2025,15 @@
   .progress-summary__copy p {
     margin-inline: auto;
   }
+
+  .faq-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .faq-intro {
+    position: static;
+  }
 }
 
 @media (max-width: 760px) {
@@ -1974,6 +2109,16 @@
   .roadmap-percent {
     grid-column: 2;
     justify-self: start;
+  }
+
+  .faq-item summary {
+    padding: 17px 18px;
+    font-size: 0.96rem;
+  }
+
+  .faq-answer {
+    padding: 0 18px 18px;
+    font-size: 0.9rem;
   }
 
   .install-panel {

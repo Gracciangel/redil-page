@@ -1,0 +1,42 @@
+[
+  {
+    "question": "¿Qué es Redil?",
+    "response": "Redil es un software pensado para gestionar congregaciones, sus ministerios, grupos y miembros, conectándolos en un solo lugar."
+  },
+  {
+    "question": "¿Quiénes pueden utilizar Redil?",
+    "response": "Redil está pensado para las congregaciones. Cada una puede crear su perfil y asociar a sus miembros mediante un código QR o un código de invitación."
+  },
+  {
+    "question": "¿Redil tiene algún costo?",
+    "response": "No. Redil es gratuito. No cobramos por su uso y recibimos únicamente donativos voluntarios."
+  },
+  {
+    "question": "¿Cómo registro mi congregación?",
+    "response": "Ingresá a {pagina de redil}, seleccioná la opción «Congregación» y luego «Registrar». Después, completá el formulario con los datos solicitados."
+  },
+  {
+    "question": "¿Cómo se valida una congregación?",
+    "response": "La validación está a cargo del equipo de Redil. Una vez enviado el formulario, el equipo se pondrá en contacto con la congregación utilizando los datos proporcionados."
+  },
+  {
+    "question": "¿Cómo pueden ingresar los miembros a una congregación?",
+    "response": "Los miembros pueden asociarse mediante un código QR o un código de invitación. Estos recursos estarán disponibles únicamente para las congregaciones validadas por Redil."
+  },
+  {
+    "question": "¿Qué funcionalidades ofrece Redil?",
+    "response": "Redil permite gestionar horarios, anuncios, ministerios y grupos; incorporar miembros a ministerios o grupos específicos; acceder a un módulo de Biblia; recibir notificaciones push sobre nuevos anuncios o cambios; y organizar actividades mediante un calendario. También ofrece la posibilidad de interactuar con otras congregaciones validadas por Redil, creando un punto de conexión tanto interno como externo para expandir la comunidad."
+  },
+  {
+    "question": "¿Una persona puede pertenecer a más de una congregación?",
+    "response": "No. En Redil, cada miembro puede pertenecer a una sola congregación."
+  },
+  {
+    "question": "¿Necesito descargar una aplicación para utilizar Redil?",
+    "response": "Inicialmente, Redil funciona como una PWA (aplicación web progresiva), que ofrece una experiencia similar a la de una aplicación sin ser una aplicación nativa. Próximamente, tenemos previsto lanzarlo para iOS y Android."
+  },
+  {
+    "question": "¿Cómo puedo contactar con Redil?",
+    "response": "Podés comunicarte con el equipo de Redil a través de {email aun no definido}."
+  }
+]

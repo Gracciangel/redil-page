@@ -8,6 +8,7 @@ const LINKS = [
   { href: '#congregaciones', label: 'Congregaciones' },
   { href: '#funciones', label: 'Funciones' },
   { href: '#progreso', label: 'Progreso' },
+  { href: '#faq', label: 'Preguntas' },
 ]
 
 export function Nav() {

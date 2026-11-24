@@ -1,6 +1,7 @@
 import './App.css'
 import { Congregations } from './components/Congregations'
 import { Footer } from './components/Footer'
+import { Faq } from './components/Faq'
 import { Features } from './components/Features'
 import { Hero } from './components/Hero'
 import { InstallCta } from './components/InstallCta'
@@ -29,6 +30,7 @@ function Landing() {
         <Congregations />
         <Features />
         <Progress />
+        <Faq />
         <InstallCta />
       </main>
       <Footer />

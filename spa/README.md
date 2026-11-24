@@ -36,6 +36,7 @@ npm run icons     # regenera PNGs desde src/assets/brand-mark.png
 - La organización interna son **miembros, ministerios y grupos**; no un directorio empresarial.
 - La comunicación se centra en ser **gratis** y en conectar a la congregación, con **donaciones opcionales** como forma de apoyo; no se destaca el funcionamiento sin conexión.
 - Avance general: **54 %**. Quedan módulos como ministerios y roles, calendario completo y métricas reales.
+- Las **preguntas frecuentes** viven en `src/data/faq.json` (el JSON entregado por el equipo). Los marcadores `{pagina de redil}` y `{email aun no definido}` se resuelven en `src/components/Faq.tsx`: el primero apunta al login real de Redil y el segundo se comunica como «canales de contacto a publicarse próximamente», sin inventar un email.
 
 ## Estructura
 
@@ -48,8 +49,9 @@ scripts/
 src/
   assets/brand-mark.png   marca original
   components/             Nav, Hero, PhoneMockup, Problem, Solution,
-                          Congregations, Features, Progress, InstallCta,
-                          InstallManager, Footer, Icons
+                          Congregations, Features, Progress, Faq,
+                          InstallCta, InstallManager, Footer, Icons
+  data/faq.json           preguntas frecuentes (fuente editable)
   data/landing.ts         hoja de ruta y normalización del endpoint
   hooks/useMotion.ts      reveals y parallax
   hooks/useLandingData.ts carga de datos

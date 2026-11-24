@@ -8,7 +8,7 @@ type InstallPromptEvent = Event & {
 }
 
 /** El QR de instalación siempre lleva al login de Redil, no a la landing. */
-const INSTALL_URL = 'https://redil-5bb15.web.app/login'
+export const INSTALL_URL = 'https://redil-5bb15.web.app/login'
 
 function detectIOS(): boolean {
   if (typeof navigator === 'undefined') return false
