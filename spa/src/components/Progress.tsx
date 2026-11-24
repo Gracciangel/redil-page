@@ -11,9 +11,12 @@ const STATUS_LABEL: Record<RoadmapStatus, string> = {
 
 export function Progress() {
   const { stats, roadmap, live } = useLandingData()
-  const overall = Math.round(
+  const localOverall = Math.round(
     roadmap.reduce((total, item) => total + item.progress, 0) / Math.max(1, roadmap.length),
   )
+  // El porcentaje publicado en Supabase manda; si no hay dato se usa la hoja de ruta.
+  const overall =
+    stats?.progress !== undefined ? Math.min(100, Math.max(0, stats.progress)) : localOverall
 
   const updated = stats?.updatedAt ? new Date(stats.updatedAt) : null
   const updatedLabel =
@@ -38,9 +41,15 @@ export function Progress() {
             avance es parcial.
           </p>
         </div>
-        <span className={`live-badge ${live ? 'live-badge--on' : ''}`}>
-          <i /> {live ? `En vivo${updatedLabel ? ` · ${updatedLabel}` : ''}` : 'Sin métricas publicadas'}
-        </span>
+        <div className="progress-meta">
+          {stats?.version && <span className="version-chip">Versión {stats.version}</span>}
+          <span className={`live-badge ${live ? 'live-badge--on' : ''}`}>
+            <i />{' '}
+            {live
+              ? `En vivo${updatedLabel ? ` · ${updatedLabel}` : ''}`
+              : 'Sin métricas publicadas'}
+          </span>
+        </div>
       </div>
 
       <div className="progress-summary" data-reveal>
@@ -65,22 +74,19 @@ export function Progress() {
 
       {live && stats && (
         <div className="stats-grid">
-          <div className="metric-card">
-            <strong>{stats.congregations.toLocaleString('es')}</strong>
-            <span>Congregaciones</span>
-          </div>
-          <div className="metric-card">
-            <strong>{stats.members.toLocaleString('es')}</strong>
-            <span>Miembros</span>
-          </div>
-          <div className="metric-card">
-            <strong>{stats.events.toLocaleString('es')}</strong>
-            <span>Eventos</span>
-          </div>
-          <div className="metric-card">
-            <strong>{stats.announcements.toLocaleString('es')}</strong>
-            <span>Avisos</span>
-          </div>
+          {[
+            { value: stats.congregations, label: 'Congregaciones' },
+            { value: stats.members, label: 'Miembros' },
+            { value: stats.events, label: 'Eventos' },
+            { value: stats.announcements, label: 'Avisos' },
+          ]
+            .filter((metric) => typeof metric.value === 'number')
+            .map((metric) => (
+              <div className="metric-card" key={metric.label}>
+                <strong>{(metric.value as number).toLocaleString('es')}</strong>
+                <span>{metric.label}</span>
+              </div>
+            ))}
         </div>
       )}
 
@@ -120,7 +126,7 @@ export function Progress() {
 
       <p className="data-note" data-reveal>
         {live && stats
-          ? 'Cifras leídas desde el endpoint público.'
+          ? 'Cifras y versión leídas desde la fuente pública de Redil.'
           : 'Todavía no publicamos cifras: no hay números estimados. La hoja de ruta refleja el estado real de la app.'}
       </p>
     </section>

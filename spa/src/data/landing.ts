@@ -20,10 +20,14 @@ export interface RoadmapItem {
 }
 
 export interface LandingStats {
-  congregations: number
-  members: number
-  events: number
-  announcements: number
+  congregations: number | null
+  members: number | null
+  events: number | null
+  announcements: number | null
+  /** Versión actual publicada, leída desde Supabase. */
+  version?: string
+  /** Avance general publicado. Si no viene, se calcula desde la hoja de ruta. */
+  progress?: number
   updatedAt?: string
 }
 
@@ -117,22 +121,34 @@ function normalizeStats(value: unknown): LandingStats | null {
   const members = asNumber(stats.members)
   const events = asNumber(stats.events)
   const announcements = asNumber(stats.announcements)
+  const progress = asNumber(stats.progress)
+  const version =
+    typeof stats.version === 'string' && stats.version.trim() ? stats.version.trim() : undefined
 
-  if (
-    congregations === null ||
-    members === null ||
-    events === null ||
-    announcements === null
-  ) {
-    return null
-  }
+  const hasData =
+    congregations !== null ||
+    members !== null ||
+    events !== null ||
+    announcements !== null ||
+    progress !== null ||
+    version !== undefined
+  if (!hasData) return null
+
+  const updatedAt =
+    typeof stats.updatedAt === 'string'
+      ? stats.updatedAt
+      : typeof stats.created_at === 'string'
+        ? stats.created_at
+        : undefined
 
   return {
     congregations,
     members,
     events,
     announcements,
-    updatedAt: typeof stats.updatedAt === 'string' ? stats.updatedAt : undefined,
+    version,
+    progress: progress === null ? undefined : Math.min(100, progress),
+    updatedAt,
   }
 }
 
@@ -173,16 +189,20 @@ export async function loadLandingData(signal?: AbortSignal): Promise<LandingData
   const table = supabaseStatsTable()
   if (supabase && table) {
     try {
-      const { data, error } = await supabase.from(table).select('*').limit(1)
+      const { data, error } = await supabase
+        .from(table)
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(1)
       if (error) throw error
-      const row = Array.isArray(data) ? data[0] : null
-      if (!row) return { stats: null, roadmap: ROADMAP, live: true }
 
-      const raw = row as Record<string, unknown>
+      const raw = (Array.isArray(data) ? data[0] : null) as Record<string, unknown> | null
+      const stats = raw ? normalizeStats(raw) : null
       return {
-        stats: normalizeStats(raw),
-        roadmap: normalizeRoadmap(raw.roadmap),
-        live: true,
+        stats,
+        roadmap: normalizeRoadmap(raw?.roadmap),
+        // Si la tabla está vacía no publicamos cifras: se mantiene el badge honesto.
+        live: stats !== null,
       }
     } catch (error) {
       if (signal?.aborted) throw error

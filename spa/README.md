@@ -35,12 +35,18 @@ El `.env` está en la **raíz del repo** (`../.env` desde `spa/`) y Vite lo carg
 ```
 VITE_SUPABASE_URL=https://<proyecto>.supabase.co
 VITE_SUPABASE_ANON_KEY=<anon key>
-VITE_SUPABASE_STATS_TABLE=<tabla/vista pública con las métricas>   # se define cuando se confirme el esquema
+VITE_SUPABASE_STATS_TABLE=metrics_redil
 ```
 
 - El cliente se crea en `src/lib/supabase.ts`. Solo usa la **anon key**; la `service_role` nunca debe llegar al front.
-- `src/data/landing.ts` consulta `VITE_SUPABASE_STATS_TABLE` si está definida. Espera una fila con `congregations`, `members`, `events`, `announcements`, `updatedAt` y, opcionalmente, `roadmap`.
-- Si no hay tabla configurada o la lectura falla, se mantiene el estado actual: sin cifras inventadas y badge «Sin métricas publicadas».
+- `src/data/landing.ts` lee siempre la fila más reciente de `metrics_redil` (`order by created_at desc limit 1`):
+  - `congregations` → tarjeta «Congregaciones»
+  - `members` → tarjeta «Miembros»
+  - `version` → chip «Versión …» en el encabezado de progreso
+  - `progress` → porcentaje del anillo y la barra (si viene vacío se calcula desde la hoja de ruta, hoy 54 %)
+  - `created_at` → fecha del badge «En vivo»
+- Las columnas son nullable: las tarjetas sin dato **no se muestran**. Nunca se inventan números.
+- Si la tabla está vacía o la lectura falla, se mantiene el badge «Sin métricas publicadas».
 - En CI, las mismas variables se inyectan desde **GitHub Actions Variables** (`vars.VITE_SUPABASE_*`) en el workflow de Pages. El `.env` no se commitea.
 - Si RLS bloquea la lectura anónima, hay que exponer una vista/RPC con `security_invoker` o un endpoint propio; no aflojar políticas sobre tablas sensibles.
 
