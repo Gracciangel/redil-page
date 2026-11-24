@@ -38,5 +38,9 @@
   {
     "question": "¿Cómo puedo contactar con Redil?",
     "response": "Podés comunicarte con el equipo de Redil a través de {email aun no definido}."
-  }
+  },
+{
+  "question": "¿Puedo dejar de formar parte de Redil?",
+  "response": "¡Claro! Desde el perfil de tu congregación encontrarás la opción para solicitar la baja de Redil. Simplemente presioná el botón correspondiente y esperá a que el proceso finalice.\n\nTené en cuenta que esta acción es irreversible: todos los datos de la congregación, incluidos sus miembros, ministerios, grupos y cualquier otra información vinculada, serán eliminados permanentemente y no podrán recuperarse.\n\nSi en el futuro decidís volver a utilizar Redil, deberás realizar nuevamente el proceso de registro y validación de tu congregación."
+}
 ]

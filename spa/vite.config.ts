@@ -11,6 +11,8 @@ const BASE = '/redil-page/'
 // el manifest y el service worker se generan en el build (no en dev).
 export default defineConfig({
   base: BASE,
+  // El .env está en la raíz del repo, no dentro de spa/.
+  envDir: '..',
   plugins: [
     react(),
     babel({ presets: [reactCompilerPreset()] }),

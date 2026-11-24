@@ -12,6 +12,7 @@ Sitio de presentación de **Redil**, el punto de conexión digital para congrega
 - Roboto autoalojada (subset latino), igual tipografía que la app
 - Paleta de Redil: fondo `#000`, violeta `#c084fc`, texto `#f5eef8`
 - `qrcode.react` para el QR de instalación (apunta siempre a `https://redil-5bb15.web.app/login`)
+- `@supabase/supabase-js`: cliente público (anon key, solo lectura) para las métricas reales
 - Animaciones con IntersectionObserver + CSS: reveals, parallax, órbita, marquee y barras de progreso, con respeto a `prefers-reduced-motion`
 
 ## Scripts
@@ -26,6 +27,22 @@ npm run icons     # regenera PNGs desde src/assets/brand-mark.png
 ```
 
 > El service worker solo se activa en producción. Para probar la instalación usá `npm run build && npm run preview` o desplegá por HTTPS. En iOS: Safari → Compartir → *Agregar a la pantalla de inicio*.
+
+## Conexión a Supabase
+
+El `.env` está en la **raíz del repo** (`../.env` desde `spa/`) y Vite lo carga con `envDir: '..'`:
+
+```
+VITE_SUPABASE_URL=https://<proyecto>.supabase.co
+VITE_SUPABASE_ANON_KEY=<anon key>
+VITE_SUPABASE_STATS_TABLE=<tabla/vista pública con las métricas>   # se define cuando se confirme el esquema
+```
+
+- El cliente se crea en `src/lib/supabase.ts`. Solo usa la **anon key**; la `service_role` nunca debe llegar al front.
+- `src/data/landing.ts` consulta `VITE_SUPABASE_STATS_TABLE` si está definida. Espera una fila con `congregations`, `members`, `events`, `announcements`, `updatedAt` y, opcionalmente, `roadmap`.
+- Si no hay tabla configurada o la lectura falla, se mantiene el estado actual: sin cifras inventadas y badge «Sin métricas publicadas».
+- En CI, las mismas variables se inyectan desde **GitHub Actions Variables** (`vars.VITE_SUPABASE_*`) en el workflow de Pages. El `.env` no se commitea.
+- Si RLS bloquea la lectura anónima, hay que exponer una vista/RPC con `security_invoker` o un endpoint propio; no aflojar políticas sobre tablas sensibles.
 
 ## Decisiones de contenido
 

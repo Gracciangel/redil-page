@@ -1,10 +1,13 @@
 /**
  * Datos de la landing.
  *
- * No hay métricas de ejemplo: mientras no exista el endpoint, la sección de
- * cifras simplemente no se muestra. Cuando esté listo, alcanza con definir
- * VITE_LANDING_STATS_URL (o VITE_API_URL) en .env.
+ * No hay métricas de ejemplo: mientras no exista una fuente configurada, la
+ * sección de cifras simplemente no se muestra. Las fuentes posibles son una
+ * API pública (VITE_LANDING_STATS_URL / VITE_API_URL) o una tabla/vista de
+ * Supabase (VITE_SUPABASE_STATS_TABLE) leída con la anon key.
  */
+
+import { supabase } from '../lib/supabase'
 
 export type RoadmapStatus = 'done' | 'active' | 'next'
 
@@ -93,6 +96,10 @@ function statsEndpoint(): string {
   return api ? `${api.replace(/\/$/, '')}/public/stats` : ''
 }
 
+function supabaseStatsTable(): string {
+  return import.meta.env.VITE_SUPABASE_STATS_TABLE?.trim() ?? ''
+}
+
 function asNumber(value: unknown): number | null {
   return typeof value === 'number' && Number.isFinite(value) && value >= 0
     ? Math.round(value)
@@ -160,6 +167,29 @@ function normalizeRoadmap(value: unknown): RoadmapItem[] {
 }
 
 export async function loadLandingData(signal?: AbortSignal): Promise<LandingData> {
+  // Fuente Supabase: una tabla/vista pública con las cifras y, opcionalmente,
+  // una columna `roadmap` con los avances. Sin tabla configurada se mantiene
+  // el comportamiento actual (sin métricas inventadas).
+  const table = supabaseStatsTable()
+  if (supabase && table) {
+    try {
+      const { data, error } = await supabase.from(table).select('*').limit(1)
+      if (error) throw error
+      const row = Array.isArray(data) ? data[0] : null
+      if (!row) return { stats: null, roadmap: ROADMAP, live: true }
+
+      const raw = row as Record<string, unknown>
+      return {
+        stats: normalizeStats(raw),
+        roadmap: normalizeRoadmap(raw.roadmap),
+        live: true,
+      }
+    } catch (error) {
+      if (signal?.aborted) throw error
+      return { stats: null, roadmap: ROADMAP, live: false }
+    }
+  }
+
   const endpoint = statsEndpoint()
   if (!endpoint) return { stats: null, roadmap: ROADMAP, live: false }
 
