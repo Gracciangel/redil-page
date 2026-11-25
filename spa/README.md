@@ -57,7 +57,7 @@ VITE_SUPABASE_METRICS_RPC=get_redil_metrics
 - Las columnas son nullable: las tarjetas sin dato **no se muestran**. Nunca se inventan números.
 - Si la tabla está vacía o la lectura falla, se mantiene el badge «Sin métricas publicadas».
 - En CI, las mismas variables se inyectan desde **GitHub Actions Variables** (`vars.VITE_SUPABASE_*`) en el workflow de Pages. El `.env` no se commitea.
-- Si RLS bloquea la lectura anónima, hay que exponer una vista/RPC con `security_invoker` o un endpoint propio; no aflojar políticas sobre tablas sensibles.
+- La RPC `security definer` ya evita depender de RLS sobre la tabla: no hace falta aflojar políticas de lectura sobre tablas sensibles.
 
 ### RPC de métricas
 
@@ -140,10 +140,10 @@ Contrato esperado (`GET`, con CORS habilitado):
 ```json
 {
   "stats": {
-    "congregations": 0,
-    "members": 0,
-    "events": 0,
-    "announcements": 0,
+    "congregations": null,
+    "members": null,
+    "events": null,
+    "announcements": null,
     "updatedAt": "2026-11-24T12:00:00Z"
   },
   "roadmap": [
