@@ -3,7 +3,7 @@ import { CheckIcon, GridIcon, QrIcon, SparkIcon, UsersIcon } from './Icons'
 
 export function PhoneMockup() {
   return (
-    <div className="phone-scene" data-reveal>
+    <div className="phone-scene">
       <div className="phone-aura" aria-hidden="true" />
       <div className="phone" aria-label="Vista previa de la app Redil">
         <div className="phone-island" aria-hidden="true" />
