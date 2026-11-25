@@ -36,10 +36,11 @@ El `.env` está en la **raíz del repo** (`../.env` desde `spa/`) y Vite lo carg
 VITE_SUPABASE_URL=https://<proyecto>.supabase.co
 VITE_SUPABASE_ANON_KEY=<anon key>
 VITE_SUPABASE_STATS_TABLE=metrics_redil
+VITE_SUPABASE_METRICS_RPC=get_redil_metrics
 ```
 
 - El cliente se crea en `src/lib/supabase.ts`. Solo usa la **anon key**; la `service_role` nunca debe llegar al front.
-- `src/data/landing.ts` lee siempre la fila más reciente de `metrics_redil` (`order by created_at desc limit 1`):
+- `src/data/landing.ts` llama primero a la RPC `get_redil_metrics` y, si todavía no existe, cae a la lectura directa de `metrics_redil`. En ambos casos toma la fila más reciente (`created_at desc nulls last, id desc`):
   - `congregations` → tarjeta «Congregaciones»
   - `members` → tarjeta «Miembros»
   - `version` → chip «Versión …» en el encabezado de progreso
@@ -49,6 +50,15 @@ VITE_SUPABASE_STATS_TABLE=metrics_redil
 - Si la tabla está vacía o la lectura falla, se mantiene el badge «Sin métricas publicadas».
 - En CI, las mismas variables se inyectan desde **GitHub Actions Variables** (`vars.VITE_SUPABASE_*`) en el workflow de Pages. El `.env` no se commitea.
 - Si RLS bloquea la lectura anónima, hay que exponer una vista/RPC con `security_invoker` o un endpoint propio; no aflojar políticas sobre tablas sensibles.
+
+### RPC de métricas
+
+La definición está en `src/supabase/rpcs/get_redil_metrics.sql`. Hay que ejecutarla **una vez** en el SQL Editor de Supabase (o con la CLI con permisos de `postgres`); la anon key no puede crear funciones.
+
+- La función `public.get_redil_metrics()` es `security definer`, `stable` y no acepta parámetros: devuelve solo `congregations`, `members`, `version`, `progress` y `created_at` de la última fila.
+- Se retira `EXECUTE` a `PUBLIC` y se lo da únicamente a `anon` y `authenticated`.
+- El archivo incluye, comentadas, las sentencias para revocar el acceso directo a la tabla una vez verificada la RPC.
+- Para probarla sin frontend: `curl -X POST "$SUPABASE_URL/rest/v1/rpc/get_redil_metrics" -H "apikey: $ANON_KEY" -H "Authorization: Bearer $ANON_KEY"`.
 
 ## Decisiones de contenido
 

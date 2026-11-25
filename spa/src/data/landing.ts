@@ -104,6 +104,20 @@ function supabaseStatsTable(): string {
   return import.meta.env.VITE_SUPABASE_STATS_TABLE?.trim() ?? ''
 }
 
+function supabaseMetricsRpc(): string {
+  return import.meta.env.VITE_SUPABASE_METRICS_RPC?.trim() || 'get_redil_metrics'
+}
+
+function fromSupabaseRow(raw: Record<string, unknown> | null): LandingData {
+  const stats = raw ? normalizeStats(raw) : null
+  return {
+    stats,
+    roadmap: normalizeRoadmap(raw?.roadmap),
+    // Si no hay fila no publicamos cifras: se mantiene el badge honesto.
+    live: stats !== null,
+  }
+}
+
 function asNumber(value: unknown): number | null {
   return typeof value === 'number' && Number.isFinite(value) && value >= 0
     ? Math.round(value)
@@ -183,34 +197,40 @@ function normalizeRoadmap(value: unknown): RoadmapItem[] {
 }
 
 export async function loadLandingData(signal?: AbortSignal): Promise<LandingData> {
-  // Fuente Supabase: una tabla/vista pública con las cifras y, opcionalmente,
-  // una columna `roadmap` con los avances. Sin tabla configurada se mantiene
-  // el comportamiento actual (sin métricas inventadas).
-  const table = supabaseStatsTable()
-  if (supabase && table) {
+  if (supabase) {
+    // 1) RPC pública: expone solo la última fila y las columnas necesarias.
     try {
-      const { data, error } = await supabase
-        .from(table)
-        .select('*')
-        // `created_at` es nullable: en DESC los NULL van primero, así que se
-        // mandan al final y se desempata por id (identity) para tomar la fila
-        // realmente más reciente.
-        .order('created_at', { ascending: false, nullsFirst: false })
-        .order('id', { ascending: false })
-        .limit(1)
+      const { data, error } = await supabase.rpc(supabaseMetricsRpc())
       if (error) throw error
-
-      const raw = (Array.isArray(data) ? data[0] : null) as Record<string, unknown> | null
-      const stats = raw ? normalizeStats(raw) : null
-      return {
-        stats,
-        roadmap: normalizeRoadmap(raw?.roadmap),
-        // Si la tabla está vacía no publicamos cifras: se mantiene el badge honesto.
-        live: stats !== null,
-      }
+      return fromSupabaseRow(
+        (Array.isArray(data) ? data[0] : null) as Record<string, unknown> | null,
+      )
     } catch (error) {
       if (signal?.aborted) throw error
-      return { stats: null, roadmap: ROADMAP, live: false }
+      // La RPC aún no está creada en la base: se prueba la lectura directa.
+    }
+
+    // 2) Fallback mientras la RPC no se despliega: tabla/vista pública.
+    const table = supabaseStatsTable()
+    if (table) {
+      try {
+        const { data, error } = await supabase
+          .from(table)
+          .select('*')
+          // `created_at` es nullable: en DESC los NULL van primero, así que se
+          // mandan al final y se desempata por id (identity) para tomar la fila
+          // realmente más reciente.
+          .order('created_at', { ascending: false, nullsFirst: false })
+          .order('id', { ascending: false })
+          .limit(1)
+        if (error) throw error
+        return fromSupabaseRow(
+          (Array.isArray(data) ? data[0] : null) as Record<string, unknown> | null,
+        )
+      } catch (error) {
+        if (signal?.aborted) throw error
+        return { stats: null, roadmap: ROADMAP, live: false }
+      }
     }
   }
 
