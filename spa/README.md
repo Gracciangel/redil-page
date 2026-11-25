@@ -43,8 +43,6 @@ El `.env` está en la **raíz del repo** (`../.env` desde `spa/`) y Vite lo carg
 ```
 VITE_SUPABASE_URL=https://<proyecto>.supabase.co
 VITE_SUPABASE_ANON_KEY=<anon key>
-VITE_SUPABASE_STATS_TABLE=metrics_redil
-VITE_SUPABASE_METRICS_RPC=get_redil_metrics
 ```
 
 - El cliente se crea en `src/lib/supabase.ts`. Solo usa la **anon key**; la `service_role` nunca debe llegar al front.
