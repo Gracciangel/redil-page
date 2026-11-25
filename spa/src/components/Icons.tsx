@@ -20,6 +20,16 @@ function Svg({ size = 22, children }: IconProps & { children: ReactNode }) {
   )
 }
 
+export function ChurchIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M4 21V10l8-5 8 5v11" />
+      <path d="M12 5V2M10.5 3.5h3" />
+      <path d="M9 21v-6h6v6M2 21h20" />
+    </Svg>
+  )
+}
+
 export function UsersIcon(props: IconProps) {
   return (
     <Svg {...props}>

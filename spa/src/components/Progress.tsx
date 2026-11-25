@@ -1,12 +1,52 @@
-import type { CSSProperties } from 'react'
+import type { ComponentType, CSSProperties } from 'react'
 import { useLandingData } from '../hooks/useLandingData'
+import { useCountUp } from '../hooks/useCountUp'
+import { useInView } from '../hooks/useInView'
 import type { RoadmapStatus } from '../data/landing'
-import { CheckIcon, SparkIcon } from './Icons'
+import {
+  CalendarIcon,
+  CheckIcon,
+  ChurchIcon,
+  MegaphoneIcon,
+  SparkIcon,
+  UsersIcon,
+} from './Icons'
 
 const STATUS_LABEL: Record<RoadmapStatus, string> = {
   done: 'Listo',
   active: 'En curso',
   next: 'Próximo',
+}
+
+type MetricIcon = ComponentType<{ size?: number }>
+
+function MetricCard({
+  value,
+  label,
+  Icon,
+  delay,
+}: {
+  value: number
+  label: string
+  Icon: MetricIcon
+  delay: number
+}) {
+  const { ref, inView } = useInView<HTMLDivElement>()
+  const count = useCountUp(value, inView)
+
+  return (
+    <div
+      ref={ref}
+      className={`metric-card ${inView ? 'metric-card--in' : ''}`}
+      style={{ '--delay': `${delay}ms` } as CSSProperties}
+    >
+      <span className="metric-card__icon" aria-hidden="true">
+        <Icon size={22} />
+      </span>
+      <strong>{count.toLocaleString('es')}</strong>
+      <span className="metric-card__label">{label}</span>
+    </div>
+  )
 }
 
 export function Progress() {
@@ -75,17 +115,20 @@ export function Progress() {
       {live && stats && (
         <div className="stats-grid">
           {[
-            { value: stats.congregations, label: 'Congregaciones' },
-            { value: stats.members, label: 'Miembros' },
-            { value: stats.events, label: 'Eventos' },
-            { value: stats.announcements, label: 'Avisos' },
+            { value: stats.congregations, label: 'Congregaciones', Icon: ChurchIcon },
+            { value: stats.members, label: 'Miembros', Icon: UsersIcon },
+            { value: stats.events, label: 'Eventos', Icon: CalendarIcon },
+            { value: stats.announcements, label: 'Avisos', Icon: MegaphoneIcon },
           ]
             .filter((metric) => typeof metric.value === 'number')
-            .map((metric) => (
-              <div className="metric-card" key={metric.label}>
-                <strong>{(metric.value as number).toLocaleString('es')}</strong>
-                <span>{metric.label}</span>
-              </div>
+            .map((metric, index) => (
+              <MetricCard
+                key={metric.label}
+                value={metric.value ?? 0}
+                label={metric.label}
+                Icon={metric.Icon}
+                delay={index * 110}
+              />
             ))}
         </div>
       )}
